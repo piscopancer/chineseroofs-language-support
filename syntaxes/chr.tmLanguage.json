@@ -1,0 +1,133 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Chinese Roofs",
+  "patterns": [
+    {
+      "include": "#translation"
+    },
+    {
+      "include": "#latin"
+    },
+    {
+      "include": "#punctuation"
+    },
+    {
+      "include": "#comment"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "name": "comment.chr",
+      "match": "^#.*$",
+      "captures": {
+        "0": {
+          "name": "comment"
+        }
+      }
+    },
+    "translation": {
+      "begin": "^\\<",
+      "beginCaptures": {
+        "0": {
+          "patterns": [
+            {
+              "include": "#punctuation"
+            }
+          ]
+        }
+      },
+      "end": "^\\>",
+      "endCaptures": {
+        "0": {
+          "patterns": [
+            {
+              "include": "#punctuation"
+            }
+          ]
+        }
+      },
+      "name": "translation.chr",
+      "patterns": [
+        {
+          "include": "#punctuation"
+        },
+        {
+          "begin": "(?<=\\<)",
+          "end": "(?=-$)",
+          "name": "translation.text.chr",
+          "patterns": [
+            {
+              "include": "#punctuation"
+            }
+          ]
+        },
+        {
+          "begin": "(?<=-$)",
+          "end": "(?=\\>)",
+          "name": "translation.vocabulary.chr",
+          "patterns": [
+            {
+              "name": "translation.vocabulary.word.chr",
+              "match": "^(.*?\\s+)(\\[.*\\])?(\\s+.*)?$",
+              "captures": {
+                "1": {
+                  "name": "translation.vocabulary.word.original.chr"
+                },
+                "2": {
+                  "name": "translation.vocabulary.word.pinyin.chr",
+                  "patterns": [
+                    {
+                      "match": "[a-zA-Z]+",
+                      "captures": {
+                        "0": {
+                          "name": "translation.vocabulary.word.pinyin.char.chr"
+                        }
+                      }
+                    },
+                    {
+                      "match": "\\d+",
+                      "captures": {
+                        "0": {
+                          "name": "translation.vocabulary.word.pinyin.tone.chr"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "3": {
+                  "name": "translation.vocabulary.word.translation.chr",
+                  "patterns": [
+                    {
+                      "include": "#punctuation"
+                    },
+                    {
+                      "include": "#latin"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "include": "#punctuation"
+            }
+          ]
+        }
+      ]
+    },
+    "latin": {
+      "name": "latin.chr",
+      "match": "(\\p{Latin})",
+      "captures": {
+        "1": { "name": "comment" }
+      }
+    },
+    "punctuation": {
+      "name": "punctuation.chr",
+      "match": "(\\.|\\,|\\:|\\;|\\<|\\>|\\[|\\(|\\)|\\]|\\!|\\?|\\.\\.\\.|\"|\"|-|`|'|，|、|：|；|。|？|！|《|》|【|】|·|”|“)",
+      "captures": {
+        "1": { "name": "punctuation" }
+      }
+    }
+  },
+  "scopeName": "source.chr"
+}

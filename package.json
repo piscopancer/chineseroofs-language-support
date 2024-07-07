@@ -1,0 +1,110 @@
+{
+  "name": "chineseroofs-language-support",
+  "displayName": "ChineseRoofs language support",
+  "description": "Dictionary fetcher and syntax highlighter for ChineseRoofs language (.chr)",
+  "icon": "./images/logo.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/piscopancer/chineseroofs-language-support"
+  },
+  "author": {
+    "name": "piscopancer",
+    "email": "igor.bistr01092003@gmail.com",
+    "url": "https://github.com/piscopancer"
+  },
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "chr",
+        "aliases": [
+          "ChineseRoofs",
+          "chr"
+        ],
+        "extensions": [
+          ".chr"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "chr",
+        "scopeName": "source.chr",
+        "path": "./syntaxes/chr.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "chr",
+        "path": "./snippets/chr.code-snippets"
+      }
+    ],
+    "configuration": {
+      "title": "ChineseRoofs",
+      "properties": {
+        "chineseroofsLanguageSupport.autoShowTranslations": {
+          "description": "Automatically show tooltip with translations from Chinese after characters were selected",
+          "type": "boolean",
+          "default": true
+        },
+        "chineseroofsLanguageSupport.autoShowTranslationsDelay": {
+          "description": "Delay in milliseconds for tooltip with translations to appear",
+          "type": "number",
+          "default": 500,
+          "minimum": 0,
+          "maximum": 1000
+        }
+      }
+    },
+    "configurationDefaults": {
+      "[chr]": {
+        "editor.bracketPairColorization.enabled": false
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "npm run check-types && npm run lint && node esbuild.js",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "package": "npm run check-types && npm run lint && node esbuild.js --production",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint src --ext ts",
+    "build": "vsce package",
+    "install": "code --install-extension chineseroofs-language-support-0.0.1.vsix"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.91.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "@vscode/test-cli": "^0.0.9",
+    "@vscode/test-electron": "^2.3.9",
+    "cheerio": "^1.0.0-rc.12",
+    "esbuild": "^0.20.2",
+    "eslint": "^8.57.0",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^5.4.5"
+  },
+  "keywords": [
+    "language",
+    "extension",
+    "vscode"
+  ],
+  "license": "MIT"
+}

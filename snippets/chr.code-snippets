@@ -1,0 +1,12 @@
+{
+  "Insert word": {
+    "prefix": "word",
+    "description": "Insert word",
+    "body": "${0:${CLIPBOARD}} [$1] $2"
+  },
+  "Insert translation block": {
+    "prefix": "<",
+    "description": "Insert translation block",
+    "body": ["<", "$0", "-", "", ">"]
+  }
+}
