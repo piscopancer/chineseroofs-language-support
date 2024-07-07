@@ -54,12 +54,12 @@
     "configuration": {
       "title": "ChineseRoofs",
       "properties": {
-        "chineseroofsLanguageSupport.autoShowTranslations": {
+        "chineseRoofsLanguageSupport.autoShowTranslations": {
           "description": "Automatically show tooltip with translations from Chinese after characters were selected",
           "type": "boolean",
           "default": true
         },
-        "chineseroofsLanguageSupport.autoShowTranslationsDelay": {
+        "chineseRoofsLanguageSupport.autoShowTranslationsDelay": {
           "description": "Delay in milliseconds for tooltip with translations to appear",
           "type": "number",
           "default": 500,
