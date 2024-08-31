@@ -3,6 +3,9 @@
   "name": "Chinese Roofs",
   "patterns": [
     {
+      "include": "#comment"
+    },
+    {
       "include": "#translation"
     },
     {
@@ -10,15 +13,12 @@
     },
     {
       "include": "#punctuation"
-    },
-    {
-      "include": "#comment"
     }
   ],
   "repository": {
     "comment": {
       "name": "comment.chr",
-      "match": "^//.*$",
+      "match": "^//.*",
       "captures": {
         "0": {
           "name": "comment"
