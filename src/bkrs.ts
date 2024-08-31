@@ -7,18 +7,17 @@ type Translation = {
   ru: string
 }
 
-export function buildUrl(ch: string) {
+export function url(ch: string) {
   return `https://bkrs.info/slovo.php?ch=${ch}`
 }
 
-export function buildMkrsUrl(ch: string) {
+export function mkrsUrl(ch: string) {
   return `https://mkrs-beta.vercel.app/search/${ch}`
 }
 
 export function translationToDecoration(tr: Translation, selectionRange: vscode.Range): vscode.DecorationOptions {
-  const message = new vscode.MarkdownString(`[${tr.ch}](${buildMkrsUrl(tr.ch)}) ${tr.py}\n\n<em>${tr.ru}</em>`)
+  const message = new vscode.MarkdownString(`[${tr.ch}](${mkrsUrl(tr.ch)}) ${tr.py}\n\n<em>${tr.ru}</em>`)
   message.supportHtml = true
-
   return {
     hoverMessage: message,
     range: selectionRange,

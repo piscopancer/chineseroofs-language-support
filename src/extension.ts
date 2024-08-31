@@ -1,13 +1,16 @@
 import * as vscode from 'vscode'
 import * as bkrs from './bkrs'
 import { config } from './config'
+import * as linguee from './linguee'
 
 let abortController: AbortController | null = null
 
 let decorationTimer: null | NodeJS.Timeout = null
 
 export function activate(context: vscode.ExtensionContext) {
-  const decorationType = vscode.window.createTextEditorDecorationType({ textDecoration: 'underline' })
+  const decorationType = vscode.window.createTextEditorDecorationType({
+    color: 'white',
+  })
 
   vscode.window.onDidChangeTextEditorSelection(async (e) => {
     e.textEditor.setDecorations(decorationType, [])
@@ -25,8 +28,12 @@ export function activate(context: vscode.ExtensionContext) {
         clearTimeout(decorationTimer)
       }
       try {
-        const bkrsHtml = await fetch(bkrs.buildUrl(selectedText), { signal: abortController.signal }).then((res) => res.text())
-        const decorations = createDecorations(bkrsHtml, selectionRange)
+        const [bkrsHtml, lingueeHtml] = await Promise.all([
+          //
+          fetch(bkrs.url(selectedText), { signal: abortController.signal }).then((res) => res.text()),
+          fetch(linguee.url(selectedText), { signal: abortController.signal }).then((res) => res.text()),
+        ])
+        const decorations = createDecorations(selectedText, bkrsHtml, lingueeHtml, selectionRange)
         e.textEditor.setDecorations(decorationType, decorations)
         if (config.get('autoShowTranslations')) {
           decorationTimer = setTimeout(() => {
@@ -44,8 +51,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {}
 
-function createDecorations(bkrsHtml: string, selectionRange: vscode.Range): vscode.DecorationOptions[] {
+function createDecorations(selectedText: string, bkrsHtml: string, lingueeHtml: string, selectionRange: vscode.Range): vscode.DecorationOptions[] {
   const decorations: vscode.DecorationOptions[] = []
+
+  decorations.push({ hoverMessage: new vscode.MarkdownString(`[$(globe) ${selectedText}](${bkrs.mkrsUrl(selectedText)})`, true), range: selectionRange } satisfies vscode.DecorationOptions)
 
   const bkrsTranslation = bkrs.parseTranslation(bkrsHtml)
   if (bkrsTranslation) {
@@ -58,27 +67,17 @@ function createDecorations(bkrsHtml: string, selectionRange: vscode.Range): vsco
     }
   }
 
-  // const reversoDom = parse(reversoHtml)
-  // const reversoRes = reverso.parseReverso(reversoDom)
-  // switch (reversoRes.type) {
-  //   case 'one': {
-  //     decorations.push({
-  //       hoverMessage: `${reversoRes.translations.join(', ')}`,
-  //       range: selectionRange,
-  //     })
-  //     break
-  //   }
-  //   case 'many':
-  //     let message = ''
-  //     for (const group of reversoRes.groups) {
-  //       message += `${group.original} <em>${group.translations.join(', ')}</em>\n\n`
-  //     }
-  //     decorations.push({
-  //       hoverMessage: message,
-  //       range: selectionRange,
-  //     })
-  //     break
-  // }
+  decorations.push({ hoverMessage: new vscode.MarkdownString(`[$(globe) ${selectedText}](${linguee.url(selectedText)})`, true), range: selectionRange } satisfies vscode.DecorationOptions)
+
+  const lingueeExact = linguee.parseExact(lingueeHtml)
+  if (lingueeExact) {
+    decorations.push(linguee.exactToDec(lingueeExact, selectionRange))
+  }
+
+  const lingueeInexact = linguee.parseInexact(lingueeHtml)
+  if (lingueeInexact) {
+    decorations.push(linguee.inexactToDec(lingueeInexact, selectionRange))
+  }
 
   return decorations
 }
